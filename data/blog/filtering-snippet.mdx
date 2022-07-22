@@ -56,20 +56,20 @@ The router is used to fetch the collection slug from the URL. And we also want t
 
 ```js
 async function getData(collection_slug:string){
-        try {
-            let { data: sales_data, error, status } = await supabase
-                .from("Sales_data__"+collection_slug)
-                .select("*")
-                .gte('id', indexOfFirstNft) //filtering based on pagination
-                .lte('id', indexOfLastNft)
-                .order('id', { ascending: true });
-            if (error) { throw error; }
-            if (sales_data) { setData(sales_data); }
-        } catch (error:any){ alert(error.message) }
-    }
+    try {
+        let { data: sales_data, error, status } = await supabase
+            .from("Sales_data__"+collection_slug)
+            .select("*")
+            .gte('id', indexOfFirstNft) //filtering based on pagination
+            .lte('id', indexOfLastNft)
+            .order('id', { ascending: true });
+        if (error) { throw error; }
+        if (sales_data) { setData(sales_data); }
+    } catch (error:any){ alert(error.message) }
+}
 ```
 
-`.select("*")` is the read function from the database. \* implying to fetch all the columns. [[More info](https://https://supabase.com/docs/reference/javascript/select)]. Multiple filters can be attached together.
+`.select("*")` is the read function from the database. \* implying to fetch all the columns. [[More info](https://https://supabase.com/docs/reference/javascript/select)]. Multiple filters(https://supabase.com/docs/reference/javascript/using-filters) can be attached together like `gte()` and `le()` for different columns.
 
 ## Updated new data
 
@@ -91,23 +91,22 @@ useEffect(() => {
 
 Slightly different principle. the .on().subscribe() creates a websocket which sends data about changes to the database. handleChanges is called on that data:
 
-```
+```js
 // function to handle Update events
-    const handleChanges = (payload) => {
-        if(payload.eventType === 'UPDATE' && data !== null){
-            //check if is being displayed
-            if (payload.old.id >= indexOfFirstNft && payload.old.id <= indexOfLastNft){
-                const indexOfUpdatedNft = payload.old.id - data[0].id //works for when token_id starts at 0 or 1 or any other page
-                //set the new data
-                const updatedData = [...data]
-                updatedData[indexOfUpdatedNft] = payload.new
-                setData(updatedData)
-            }
-        }
-        else{
-            console.log("Unexpected behaviour :", payload)
-        }
+const handleChanges = (payload) => {
+  if (payload.eventType === 'UPDATE' && data !== null) {
+    //check if is being displayed
+    if (payload.old.id >= indexOfFirstNft && payload.old.id <= indexOfLastNft) {
+      const indexOfUpdatedNft = payload.old.id - data[0].id //works for when token_id starts at 0 or 1 or any other page
+      //set the new data
+      const updatedData = [...data]
+      updatedData[indexOfUpdatedNft] = payload.new
+      setData(updatedData)
     }
+  } else {
+    console.log('Unexpected behaviour :', payload)
+  }
+}
 ```
 
 You won't really have to update this when filtering because it just only updates nft items that are present in the window.
