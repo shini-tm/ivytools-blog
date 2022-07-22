@@ -1,10 +1,10 @@
 const siteMetadata = {
   title: {
-    en: 'Marcelo Formentão – Software Engineer',
-    pt: 'Marcelo Formentão – Engenheiro de Software',
+    en: 'ivy.tools blog – the swiss knife of nft sniping',
+    pt: 'ivy.tools blog – a faca suíça de nft sniping',
   },
   author: 'Marcelo Formentão',
-  headerTitle: { en: 'Personal Website', pt: 'Site Pessoal' },
+  headerTitle: { en: 'Blog website', pt: 'Site Pessoal' },
   description: {
     en: 'A Software Engineer that code for passion and design for fun.',
     pt: 'A Software Engineer that code for passion and design for fun.',
