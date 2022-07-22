@@ -6,12 +6,16 @@ draft: false
 summary: 'How to filter data with supabase on ivytools'
 layout: 'PostSimple'
 ---
-# Filtering and pagination
-The website only ever reads data from the supabase database. Each collection page has two calls: 
-* the initial fetch of the data
-* the updated data when the database has been updated
 
-At some point it would be nice to give each user their own unique login to track whose using (and potentially abusing the database). There is a file called ```supabaseClient.js```:
+# Filtering and pagination
+
+The website only ever reads data from the supabase database. Each collection page has two calls:
+
+- the initial fetch of the data
+- the updated data when the database has been updated
+
+At some point it would be nice to give each user their own unique login to track whose using (and potentially abusing the database). There is a file called `supabaseClient.js`:
+
 ```.
 ├── ivytools
 │   ├── ...
@@ -21,10 +25,12 @@ At some point it would be nice to give each user their own unique login to track
 │       └── supabaseClient.js
 ...
 ```
+
 ## Supabase login
-``` import { createClient } from '@supabase/supabase-js'
+
+```import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-export default supabase 
+export default supabase
 ```
