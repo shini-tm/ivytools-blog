@@ -1,7 +1,7 @@
 ---
 title: 'Filtering with supabase snippets'
 date: '2022-07-22'
-tags: ['talk', 'motivation', 'changes', 'beginning']
+tags: ['supabase', 'filtering', 'useEffect']
 draft: false
 summary: 'How to filter data with supabase on ivytools'
 layout: 'PostSimple'
@@ -28,9 +28,86 @@ At some point it would be nice to give each user their own unique login to track
 
 ## Supabase login
 
-```import { createClient } from '@supabase/supabase-js'
+```js
+import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
 export default supabase
 ```
+
+The private keys should be in your `.env.local` file. In future, instead of the `NEXT_PUBLIC_SUPABASE_ANON_KEY`, individual users will have their own keys. But ANON can represent a public member (or we could just make it members only and they can see it through live streams or videos).
+
+## Initial fetch of data
+
+```js
+import supabase from '../../utils/supabaseClient'
+
+//fetch data (initial + on page change)
+useEffect(() => {
+  if (router.isReady) {
+    getData(collection_slug)
+  }
+}, [router.isReady, currentPage])
+```
+
+The router is used to fetch the collection slug from the URL. And we also want to refetch data if the page number changes.
+
+```js
+async function getData(collection_slug:string){
+        try {
+            let { data: sales_data, error, status } = await supabase
+                .from("Sales_data__"+collection_slug)
+                .select("*")
+                .gte('id', indexOfFirstNft) //filtering based on pagination
+                .lte('id', indexOfLastNft)
+                .order('id', { ascending: true });
+            if (error) { throw error; }
+            if (sales_data) { setData(sales_data); }
+        } catch (error:any){ alert(error.message) }
+    }
+```
+
+`.select("*")` is the read function from the database. \* implying to fetch all the columns. [[More info](https://https://supabase.com/docs/reference/javascript/select)]. Multiple filters can be attached together.
+
+## Updated new data
+
+```js
+//fetch updated data
+useEffect(() => {
+  if (collection_slug != undefined && data != null && data.length > 0) {
+    const mySubscription = supabase
+      .from('Sales_data__' + collection_slug)
+      .on('*', handleChanges)
+      .subscribe()
+    return () => {
+      //unmount cleanup?
+      supabase.removeSubscription(mySubscription)
+    }
+  }
+}, [collection_slug, data])
+```
+
+Slightly different principle. the .on().subscribe() creates a websocket which sends data about changes to the database. handleChanges is called on that data:
+
+```
+// function to handle Update events
+    const handleChanges = (payload) => {
+        if(payload.eventType === 'UPDATE' && data !== null){
+            //check if is being displayed
+            if (payload.old.id >= indexOfFirstNft && payload.old.id <= indexOfLastNft){
+                const indexOfUpdatedNft = payload.old.id - data[0].id //works for when token_id starts at 0 or 1 or any other page
+                //set the new data
+                const updatedData = [...data]
+                updatedData[indexOfUpdatedNft] = payload.new
+                setData(updatedData)
+            }
+        }
+        else{
+            console.log("Unexpected behaviour :", payload)
+        }
+    }
+```
+
+You won't really have to update this when filtering because it just only updates nft items that are present in the window.
