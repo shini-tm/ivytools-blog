@@ -1,0 +1,96 @@
+---
+title: 'Creating a new table in supabase with python'
+date: '2022-07-23'
+tags: ['supabase', 'python', 'sql', 'table']
+draft: false
+summary: 'The jank way a new table is created in our nft scraper'
+layout: 'PostSimple'
+---
+
+# Adding to supabase database
+
+Unfortunately, the script we are using to update everything is in python. Why not switch to javascript? I'm just not a fan with the single-threaded nature of javascript (and dart, the other language supported by supabase). But fortunately the workaround's are not that horrible.
+
+Some basic functions are available (inserting, reading, updating, deleting records is do-able) but other things like creating tables (necessary for every individual collection) are not. Instead we have to use a python library called [psycopg2](https://pypi.org/project/psycopg2/) which allows us to connect directly to the postgres database on supabase:
+
+```py
+import psycopg2
+from psycopg2 import Error
+from psycopg2 import sql
+
+try:
+    # Connect to an existing database
+    connection = psycopg2.connect(user=POSTGRES_USER,
+                                  password=POSTGRES_PASS,
+                                  host=POSTGRES_HOST,
+                                  port="5432",
+                                  database=POSTGERS_DATABASE)
+
+    # Create a cursor to perform database operations
+    cursor = connection.cursor()
+    ...
+```
+
+You can test to see if you're connecting properly with the following code. But also don't forget to close the connection!
+
+```py
+     ...
+     # Print PostgreSQL details
+     print("PostgreSQL server information")
+     print(connection.get_dsn_parameters(), "\n")
+     # Executing a SQL query
+     cursor.execute("SELECT version();")
+     # Fetch result
+     record = cursor.fetchone()
+     print("You are connected to - ", record, "\n")
+
+except (Exception, Error) as error:
+    print("Error while connecting to PostgreSQL", error)
+finally:
+    if (connection):
+        cursor.close()
+        connection.close()
+        print("PostgreSQL connection is closed")
+```
+
+## Creating new table for connection
+
+Once you've connected with `cursor = connection.cursor()` we can do something like this:
+
+```py
+    # SQL query to create a new table
+    create_table_query = '''CREATE TABLE {table}
+          (token_id                 int PRIMARY KEY NOT NULL,
+          last_fetched_timestamp    varchar(26) NOT NULL,
+          listing_price             REAL,
+          listing_timestamp         varchar(26),
+          highest_offer_price       REAL,
+          highest_offer_timestamp   varchar(26),
+          last_sale_price           REAL,
+          last_sale_timestamp       varchar(26),
+          rarity_score              REAL,
+          rank                      int,
+          traits                    TEXT,
+          owner                     varchar(42) NOT NULL,
+          CONSTRAINT CHK_listing_pair_nulltest CHECK ((listing_price IS NULL and listing_timestamp IS NULL) OR (listing_price IS NOT NULL and listing_timestamp IS NOT NULL)),
+          CONSTRAINT CHK_highest_offer_pair_nulltest CHECK ((highest_offer_price IS NULL and highest_offer_timestamp IS NULL) OR (highest_offer_price IS NOT NULL and highest_offer_timestamp IS NOT NULL)),
+          CONSTRAINT CHK_last_sale_pair_nulltest CHECK ((last_sale_price IS NULL and last_sale_timestamp IS NULL) OR (last_sale_price IS NOT NULL and last_sale_timestamp IS NOT NULL)),
+          CONSTRAINT CHK_timestamp_length_26 CHECK ((length(last_fetched_timestamp) = 26))
+          ); '''
+    table_name = 'Sales_data__neo-tokey9o'
+    # Execute a command: this creates a new table
+    cursor.execute(sql.SQL(create_table_query)
+                    .format(table=sql.Identifier(table_name)))
+    connection.commit()
+    print("Table created successfully in PostgreSQL ")
+```
+
+I couldn't be bothered to all the constraints, just because i want to get a end sellable product as quickly made as possible. But we can add further constraints. Like forcing the timestamps to be a certain format, (similar to the schema typescript files), etc.
+
+## USE THE sql.Identifier BOILERPLATE
+
+I think there is some security risk associated with just injecting dynamic names any other way. neo-tokey9o is just an example name.
+
+## On the bright side
+
+We only really need it for creating the table which is literally the only use-case. It's just a useful heads up for anyone having to read up on this.
