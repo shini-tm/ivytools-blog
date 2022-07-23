@@ -94,3 +94,7 @@ I think there is some security risk associated with just injecting dynamic names
 ## On the bright side
 
 We only really need it for creating the table which is literally the only use-case. It's just a useful heads up for anyone having to read up on this.
+
+## Unfortunately
+
+The thing i dislike about this approach, is that if there are changes we need to make to the variable names or something like that, it's a bit annoying to remember the different areas where all our variables are named. (In the old supabase tables, in this sql generating script, in the nft scripts local object, (potentially locally saved versions of the sales data?), the collections table page on the front end; that's all that comes to mind rn.)
