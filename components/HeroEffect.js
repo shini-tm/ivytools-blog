@@ -25,7 +25,7 @@ const WaveShaderMaterial = shaderMaterial(
     iResolution: new THREE.Vector2(0, 0),
     iBuffer: new THREE.Texture(),
     iDpr: 1,
-    baseColor: new THREE.Color(0x8b5cf6).toVector(),
+    baseColor: new THREE.Color(0x06c397).toVector(),
     backgroundColor: new THREE.Color(0x120724).toVector(),
     amplitudeFactor: 0,
     xOffset: 0,

@@ -18,8 +18,8 @@ class MyDocument extends Document {
             href="/static/favicons/favicon-16x16.png"
           />
           <link rel="manifest" href="/static/favicons/site.webmanifest" />
-          <meta name="msapplication-TileColor" content="#8b5cf6" />
-          <meta name="theme-color" content="#8b5cf6" />
+          <meta name="msapplication-TileColor" content="#06c397" />
+          <meta name="theme-color" content="#06c397" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link
