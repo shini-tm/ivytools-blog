@@ -48,8 +48,8 @@ const NoiseSphere = ({ theme }) => {
   const fullConfig = resolveConfig(tailwindConfig)
 
   const baseBackgroundColor = useMemo(
-    () => new THREE.Color(fullConfig.theme.backgroundColor.violet[1000]).toVector(),
-    [fullConfig.theme.backgroundColor.violet]
+    () => new THREE.Color(fullConfig.theme.backgroundColor.emerald[1000]).toVector(),
+    [fullConfig.theme.backgroundColor.emerald]
   )
   const blackBackgroundColor = useMemo(() => new THREE.Color('black').toVector(), [])
 

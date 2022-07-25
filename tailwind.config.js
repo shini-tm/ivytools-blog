@@ -35,11 +35,11 @@ module.exports = {
       colors: {
         primary: colors.emerald,
         gray: colors.slate,
-        violet: {
+        emerald: {
           ...colors.emerald,
-          30: '#f9f4fc',
-          950: '#170a2d',
-          1000: '#120724',
+          30: '#ecfdf5',
+          950: '#065f46',
+          1000: '#064e3b',
         },
         green: colors.cyan,
         yellow: colors.amber,
