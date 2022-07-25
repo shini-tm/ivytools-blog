@@ -13,7 +13,7 @@ const HeadingTwo = (props) => {
     <span className="not-prose">
       <h2
         className="text-2xl font-extrabold inline-block bg-clip-text text-transparent 
-        bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 md:text-3xl"
+        bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 md:text-3xl"
         {...props}
       />
     </span>

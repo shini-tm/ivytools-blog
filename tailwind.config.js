@@ -33,17 +33,17 @@ module.exports = {
         sans: ['Be Vietnam Pro', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: colors.violet,
+        primary: colors.emerald,
         gray: colors.slate,
         violet: {
-          ...colors.violet,
+          ...colors.emerald,
           30: '#f9f4fc',
           950: '#170a2d',
           1000: '#120724',
         },
-        green: colors.emerald,
+        green: colors.cyan,
         yellow: colors.amber,
-        purple: colors.violet,
+        purple: colors.emerald,
         'spotify-green': '#1DB954',
       },
       hueRotate: {

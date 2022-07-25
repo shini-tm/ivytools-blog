@@ -32,7 +32,7 @@ const Card = ({
       <div
         className={`rounded-md ${
           onlyImg ? 'p-0.5' : 'p-0.5 dark:p-px'
-        } bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full -z-10`}
+        } bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 h-full -z-10`}
       >
         <Link href={href} aria-label={`Link to ${title}`}>
           <animated.div
